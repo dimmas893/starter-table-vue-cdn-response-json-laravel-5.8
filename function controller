@@ -1,0 +1,15 @@
+       $productData = Product::query();
+        if (!empty($request['search'])) {
+            $search = "%" . $request['search'] . "%";
+            $productData->orWhere('name', 'like', $search);
+        }
+
+        if (!empty($request['category_id'])) {
+            $category_id = $request['category_id'];
+            $productData->orWhere('category_id', $category_id);
+        }
+
+        $productData->where('stock', '>=', 1);
+        $productData->orderBy('created_at', 'DESC');
+        $products = $productData->paginate($request['perPage']);
+        return response()->json($products);
